@@ -1,0 +1,135 @@
+
+body {
+  font-family: 'Roboto', sans-serif; /* Police moderne et professionnelle */
+  margin: 0;
+  padding: 0;
+  background-color: #eef2f5; /* Couleur de fond douce */
+  color: #333; /* Texte sombre pour la lisibilité */
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Main Content Section */
+.main-content {
+  margin-top: 70px; /* Décalage pour la navbar fixée */
+  padding: 20px;
+}
+
+
+
+
+
+/* Style de la barre de navigation */
+/* Navbar General Styles */
+body {
+  font-family: 'Roboto', sans-serif; /* Police moderne et professionnelle */
+  margin: 0;
+  padding: 0;
+  background-color: #eef2f5; /* Couleur de fond douce */
+  color: #333; /* Texte sombre pour la lisibilité */
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Main Content Section */
+.main-content {
+  margin-top: 70px; /* Décalage pour la navbar fixée */
+  padding: 20px;
+}
+
+/* Style de la barre de navigation */
+/* Navbar General Styles */
+.navbar {
+  background: #34495e;
+  padding: 10px 20px;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  color: #ecf0f1;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.navbar-links li {
+  display: inline-block;
+  position: relative;
+}
+
+/* Taille moyenne des icônes */
+.navbar-links i {
+  font-size: 22px; /* Taille d'icône moyenne */
+  transition: color 0.3s ease;
+}
+
+.navbar-links a {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+/* Button Style */
+.button-link {
+  background-color: #3498db;
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.button-link:hover {
+  background-color: #2980b9;
+}
+
+/* Active Link Styling */
+.navbar-links .active {
+  font-weight: bold;
+  color: #f1c40f;
+}
+
+/* Suivi doit être en premier */
+.navbar-links .suivi {
+  order: -1; /* Place "Suivi" devant les autres liens */
+}
+
+/* Icones uniquement pour login et register */
+.navbar-links .no-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Masquer le texte de Login et Register */
+.navbar-links .no-text span {
+  display: none;
+}
+
+.navbar-links .no-text:hover span {
+  display: inline; /* Afficher le texte au survol */
+}
+
+.navbar-links .no-text a {
+  display: inline-block;
+}
