@@ -8,7 +8,7 @@ export const register = async (req, res) => {
 
   try {
     // Vérifier si l'utilisateur existe déjà
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Username already exists" });
     }
@@ -31,19 +31,19 @@ export const register = async (req, res) => {
 
 // Fonction pour la connexion
 export const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     // Vérifier si l'utilisateur existe
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // Vérifier le mot de passe
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // Créer un token JWT

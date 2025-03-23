@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FaCheckCircle } from 'react-icons/fa';
 import { format, addDays, differenceInDays } from "date-fns";
@@ -89,6 +89,7 @@ const MentalFollowUp = () => {
   const completedTasksCount = checkedTasks.filter(task => task).length;
 
   return (
+    <>
     <div className="follow-up-container">
       <h2>Suivi Mental <FaCheckCircle className="step-icon" /></h2>
       <div className="date-container">
@@ -131,6 +132,7 @@ const MentalFollowUp = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

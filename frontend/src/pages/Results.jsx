@@ -1,4 +1,3 @@
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import "chart.js/auto";
@@ -83,6 +82,7 @@ const Results = () => {
   const formattedScore = score ? score.toFixed(2) : "0.00";
 
   return (
+    <>
     <div className="results-container">
       <h2>Résultats détaillés</h2>
 
@@ -100,6 +100,7 @@ const Results = () => {
       {/* Bouton pour revenir à l'évaluation */}
       <button onClick={() => navigate("/evaluation")}>Retour à l'évaluation</button>
     </div>
+    </>
   );
 };
 

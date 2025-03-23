@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTrashAlt, FaSmile, FaSadTear, FaAngry, FaMeh, FaCalendarAlt, FaTags, FaSearch, FaSave } from 'react-icons/fa';
 import { format } from 'date-fns';
+import Navbar from "../components/Navbar";
 import fr from 'date-fns/locale/fr';
 import "./Journal.css";
 const STORAGE_KEY = 'journal_entries_v1';
@@ -115,6 +116,8 @@ const Journal = () => {
     );
 
   return (
+    <>
+    <Navbar />
     <div className="journal-container">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -295,6 +298,7 @@ const Journal = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,135 +1,99 @@
-
 body {
-  font-family: 'Roboto', sans-serif; /* Police moderne et professionnelle */
+  font-family: 'Roboto', sans-serif; 
   margin: 0;
   padding: 0;
-  background-color: #eef2f5; /* Couleur de fond douce */
-  color: #333; /* Texte sombre pour la lisibilité */
+  background-color: #eef2f5; 
+  color: #333; 
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* Main Content Section */
-.main-content {
-  margin-top: 70px; /* Décalage pour la navbar fixée */
-  padding: 20px;
-}
-
-
-
-
-
-/* Style de la barre de navigation */
-/* Navbar General Styles */
-body {
-  font-family: 'Roboto', sans-serif; /* Police moderne et professionnelle */
-  margin: 0;
-  padding: 0;
-  background-color: #eef2f5; /* Couleur de fond douce */
-  color: #333; /* Texte sombre pour la lisibilité */
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-/* Main Content Section */
-.main-content {
-  margin-top: 70px; /* Décalage pour la navbar fixée */
-  padding: 20px;
-}
-
-/* Style de la barre de navigation */
-/* Navbar General Styles */
 .navbar {
-  background: #34495e;
-  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  height: 60px;
+  margin-bottom: 60px;
 }
 
 .navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
 }
 
 .navbar-logo {
-  color: #ecf0f1;
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
   font-weight: bold;
+  color: #333;
+  text-decoration: none;
 }
 
 .navbar-links {
-  list-style: none;
   display: flex;
-  gap: 15px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
 }
 
-.navbar-links li {
-  display: inline-block;
-  position: relative;
+.navbar-item {
+  margin: 0 10px;
 }
 
-/* Taille moyenne des icônes */
-.navbar-links i {
-  font-size: 22px; /* Taille d'icône moyenne */
-  transition: color 0.3s ease;
-}
-
-.navbar-links a {
-  color: #ecf0f1;
+.navbar-item a {
+  color: #666;
   text-decoration: none;
-  font-size: 16px;
-  padding: 5px 10px;
-}
-
-/* Button Style */
-.button-link {
-  background-color: #3498db;
-  color: #fff;
-  font-weight: bold;
-  padding: 8px 15px;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background-color 0.3s;
-}
-
-.button-link:hover {
-  background-color: #2980b9;
-}
-
-/* Active Link Styling */
-.navbar-links .active {
-  font-weight: bold;
-  color: #f1c40f;
-}
-
-/* Suivi doit être en premier */
-.navbar-links .suivi {
-  order: -1; /* Place "Suivi" devant les autres liens */
-}
-
-/* Icones uniquement pour login et register */
-.navbar-links .no-text {
+  padding: 8px 12px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  transition: color 0.3s;
 }
 
-/* Masquer le texte de Login et Register */
-.navbar-links .no-text span {
-  display: none;
+.navbar-item a:hover {
+  color: #1877f2;
 }
 
-.navbar-links .no-text:hover span {
-  display: inline; /* Afficher le texte au survol */
+.navbar-item a.active {
+  color: #1877f2;
+  font-weight: bold;
 }
 
-.navbar-links .no-text a {
-  display: inline-block;
+.navbar-item i {
+  font-size: 1.2rem;
+}
+
+.navbar-item.no-text i {
+  margin: 0;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.logout-button:hover {
+  color: #1877f2;
 }

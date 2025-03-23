@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const evaluationSchema = new mongoose.Schema(
   {
@@ -14,10 +14,20 @@ const evaluationSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    userId: {
+      type: String,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const Evaluation = mongoose.model('Evaluation', evaluationSchema);
+evaluationSchema.pre("save", function (next) {
+  this.evaluationId = this._id;
+  next();
+});
+
+const Evaluation = mongoose.model("Evaluation", evaluationSchema);
 
 export default Evaluation;

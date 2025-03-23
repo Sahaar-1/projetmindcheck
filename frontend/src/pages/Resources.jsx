@@ -11,6 +11,7 @@ import {
   FaCloud 
 } from 'react-icons/fa';
 import './Resources.css';
+import Navbar from '../components/Navbar';
 
 const ResourceLink = ({ href, title, icon, description }) => {
   return (
@@ -281,10 +282,12 @@ const Resources = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="resources-container">
-      <h2 className="resources-title">🌟 Ressources Utiles pour Votre Bien-être Mental 🌟</h2>
+      <h2 className="resources-title">🌟 Ressources Utiles pour Votre Bienvenir Mental 🌟</h2>
       <p className="resources-description">
-        Découvrez une collection soigneusement sélectionnée de ressources pour soutenir votre parcours vers le bien-être mental.
+        Découvrez une collection soigneusement sélectionnée de ressources pour soutenir votre parcours vers le bienvenir mental.
       </p>
       
       {Object.keys(resourcesData).map((category) => (
@@ -314,6 +317,7 @@ const Resources = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

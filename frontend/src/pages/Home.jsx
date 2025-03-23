@@ -91,6 +91,7 @@ const Home = () => {
   );
 
   return (
+
     <div style={homePageStyle}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ flex: 1, textAlign: 'left' }}>
@@ -137,7 +138,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-
+      
       <FeatureSection />
     </div>
   );
