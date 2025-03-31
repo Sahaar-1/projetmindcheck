@@ -29,7 +29,7 @@ const AppContent = () => {
           <Route path="/results" element={<PrivateRoute><Results /></PrivateRoute>} />
           <Route path="/journal" element={<PrivateRoute><Journal /></PrivateRoute>} />
           <Route path="/resources" element={<PrivateRoute><Resources /></PrivateRoute>} />
-          <Route path="/suivi-mental" element={<PrivateRoute><MentalFollowUp /></PrivateRoute>} />
+          <Route path="/mental-follow-up" element={<PrivateRoute><MentalFollowUp /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </main>

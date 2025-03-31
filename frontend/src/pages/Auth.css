@@ -1,133 +1,201 @@
 .auth-container {
   display: flex;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  background: linear-gradient(135deg, #1B3B6F 0%, #102444 100%);
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(247, 249, 252, 0.1) 0%, rgba(247, 249, 252, 0) 70%);
+  top: -250px;
+  right: -250px;
+  border-radius: 50%;
 }
 
 .auth-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 20px;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-left {
   flex: 1;
-  padding-right: 32px;
-  margin-top: -32px;
+  padding-right: 60px;
+  color: #F7F9FC;
 }
 
 .auth-left img {
-  width: 300px;
-  margin-bottom: 20px;
+  width: 360px;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
 }
 
 .auth-left h2 {
-  font-size: 24px;
-  line-height: 28px;
+  font-size: 32px;
+  line-height: 1.4;
   width: 500px;
   padding: 0 0 20px;
-  color: #1c1e21;
+  color: #F7F9FC;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .auth-box {
-  flex: 0 0 396px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
-  padding: 20px;
-  margin-top: 40px;
+  flex: 0 0 480px;
+  background: rgba(247, 249, 252, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 50px;
+  margin-top: 0;
+  transform: translateY(0);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.auth-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .input-field {
   font-size: 17px;
-  padding: 14px 16px;
-  border: 1px solid #dddfe2;
-  border-radius: 6px;
-  color: #1d2129;
-  line-height: 16px;
-  vertical-align: middle;
+  padding: 18px 24px;
+  border: 2px solid rgba(27, 59, 111, 0.1);
+  border-radius: 14px;
+  color: #1B3B6F;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s;
 }
 
 .input-field:focus {
   outline: none;
-  border-color: #1877f2;
-  box-shadow: 0 0 0 2px #e7f3ff;
+  border-color: #1B3B6F;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(27, 59, 111, 0.1);
+  transform: translateY(-2px);
 }
 
 .submit-button {
-  background-color: #1877f2;
+  background: linear-gradient(135deg, #1B3B6F 0%, #102444 100%);
   border: none;
-  border-radius: 6px;
+  border-radius: 14px;
   font-size: 20px;
-  line-height: 48px;
-  padding: 0 16px;
+  line-height: 60px;
+  padding: 0 32px;
   width: 100%;
-  color: #fff;
-  font-weight: bold;
+  color: #F7F9FC;
+  font-weight: 600;
   cursor: pointer;
-  margin: 16px 0;
+  margin: 32px 0;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
 .submit-button:hover {
-  background-color: #166fe5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(27, 59, 111, 0.2);
+}
+
+.submit-button:active {
+  transform: translateY(0);
 }
 
 .forgot-password {
-  color: #1877f2;
-  font-size: 14px;
+  color: #1B3B6F;
+  font-size: 15px;
   text-align: center;
   text-decoration: none;
   margin: 16px 0;
   display: block;
+  transition: all 0.3s;
+  font-weight: 500;
 }
 
 .forgot-password:hover {
-  text-decoration: underline;
+  color: #102444;
+  transform: translateY(-1px);
 }
 
 .divider {
   align-items: center;
-  border-bottom: 1px solid #dadde1;
+  border-bottom: 1px solid rgba(27, 59, 111, 0.1);
   display: flex;
-  margin: 20px 0;
+  margin: 24px 0;
   text-align: center;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(27, 59, 111, 0.1);
+}
+
+.divider span {
+  color: #1B3B6F;
+  padding: 0 16px;
+  font-size: 14px;
+  background: rgba(247, 249, 252, 0.95);
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .create-account-button {
-  background-color: #42b72a;
-  border: none;
-  border-radius: 6px;
-  font-size: 17px;
+  background: rgba(27, 59, 111, 0.1);
+  border: 2px solid #1B3B6F;
+  border-radius: 12px;
+  font-size: 16px;
   line-height: 48px;
-  padding: 0 16px;
-  color: #fff;
-  font-weight: bold;
+  padding: 0 32px;
+  color: #1B3B6F;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
   margin: 0 auto;
   display: block;
   width: fit-content;
+  transition: all 0.3s;
 }
 
 .create-account-button:hover {
-  background-color: #36a420;
+  background: rgba(27, 59, 111, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 59, 111, 0.1);
+}
+
+.create-account-button:active {
+  transform: translateY(0);
 }
 
 .error-message {
-  color: #ff4d4f;
+  color: #dc3545;
   text-align: center;
-  margin-bottom: 16px;
+  margin: 16px 0;
   font-size: 14px;
+  padding: 12px;
+  background: rgba(220, 53, 69, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
 }

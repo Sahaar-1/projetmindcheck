@@ -1,23 +1,23 @@
 import express from 'express';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+import {
+  submitEvaluation,
+  getLastEvaluation,
+  getEvaluationHistory
+} from '../controllers/evaluationController.js';
+
 const router = express.Router();
 
-// La fonction de traitement de soumission d'évaluation
-const submitEvaluation = async (req, res) => {
-  try {
-    // Extraire les données de la requête
-    const { evaluationId, responses, score } = req.body;
+// Toutes les routes nécessitent une authentification
+router.use(authMiddleware);
 
-    // Traiter l'évaluation (par exemple, enregistrer dans la base de données)
-    console.log('Évaluation soumise:', evaluationId, responses, score);
+// Créer une nouvelle évaluation
+router.post('/', submitEvaluation);
 
-    // Envoyer une réponse de succès
-    res.status(200).json({ message: 'Évaluation soumise avec succès' });
-  } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de l\'enregistrement de l\'évaluation', error: err });
-  }
-};
+// Récupérer toutes les évaluations de l'utilisateur
+router.get('/', getEvaluationHistory);
 
-// Définir la route POST pour soumettre l'évaluation
-router.post('/submit', submitEvaluation);
+// Récupérer une évaluation spécifique
+router.get('/:id', getLastEvaluation);
 
 export default router;

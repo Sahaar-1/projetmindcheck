@@ -1,14 +1,27 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import "./Results.css";
 
 const Results = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const [responses, setResponses] = useState({});
+  const [score, setScore] = useState(0);
 
-  // Récupération sécurisée des données passées via navigate
-  const { responses = {}, score = 0 } = location.state || {};
+  useEffect(() => {
+    // Charger les résultats depuis le localStorage
+    const savedScore = localStorage.getItem('evaluationScore');
+    const savedResponses = localStorage.getItem('evaluationResponses');
+    
+    if (savedScore && savedResponses) {
+      setScore(parseFloat(savedScore));
+      setResponses(JSON.parse(savedResponses));
+    } else {
+      // Si pas de résultats, rediriger vers l'évaluation
+      navigate('/evaluation');
+    }
+  }, [navigate]);
 
   if (!Object.keys(responses).length) {
     return (
@@ -29,6 +42,8 @@ const Results = () => {
       basse: 1,
       faible: 1,
       courte: 1,
+      yes: 5,
+      no: 1
     };
     return mapping[value] || 0;
   };
@@ -45,7 +60,7 @@ const Results = () => {
       "Difficultés de communication",
       "Gestion du stress",
       "Stratégies de relaxation",
-      "Activité physique",
+      "Activité physique"
     ],
     datasets: [
       {
@@ -61,46 +76,50 @@ const Results = () => {
           "#20B2AA", // Bleu vert clair
           "#DC143C", // Rouge cramoisi
           "#00FA9A", // Vert menthe
-          "#FF8C00", // Orange foncé
-        ],
-        hoverBackgroundColor: [
-          "#FF6347", // Rouge corail
-          "#4682B4", // Bleu acier
-          "#32CD32", // Vert lime
-          "#FFD700", // Jaune doré
-          "#8A2BE2", // Bleu violet
-          "#FF1493", // Rose profond
-          "#20B2AA", // Bleu vert clair
-          "#DC143C", // Rouge cramoisi
-          "#00FA9A", // Vert menthe
-          "#FF8C00", // Orange foncé
-        ],
-      },
-    ],
+          "#FF8C00"  // Orange foncé
+        ]
+      }
+    ]
   };
 
   const formattedScore = score ? score.toFixed(2) : "0.00";
 
   return (
-    <>
     <div className="results-container">
-      <h2>Résultats détaillés</h2>
-
-      {/* Affichage du graphique */}
-      <div className="chart-container">
-        <Pie data={chartData} aria-label="Graphique des résultats de l'évaluation mentale" />
+      <h2>Résultats de votre évaluation</h2>
+      
+      <div className="score-section">
+        <h3>Score global : {formattedScore}%</h3>
+        <div className="score-bar">
+          <div 
+            className="score-fill"
+            style={{ width: `${score}%` }}
+          ></div>
+        </div>
       </div>
 
-      {/* Score global */}
-      <div className="score-summary">
-        <h3>Votre Score Global : {formattedScore}%</h3>
-        <p>Ce graphique montre une répartition détaillée de vos réponses par catégorie.</p>
+      <div className="chart-section">
+        <h3>Répartition des réponses</h3>
+        <div className="chart-container">
+          <Pie data={chartData} />
+        </div>
       </div>
 
-      {/* Bouton pour revenir à l'évaluation */}
-      <button onClick={() => navigate("/evaluation")}>Retour à l'évaluation</button>
+      <div className="action-buttons">
+        <button 
+          className="start-evaluation-button"
+          onClick={() => navigate('/evaluation')}
+        >
+          Faire une nouvelle évaluation
+        </button>
+        <button 
+          className="follow-up-button"
+          onClick={() => navigate('/mental-follow-up')}
+        >
+          Voir le suivi mental
+        </button>
+      </div>
     </div>
-    </>
   );
 };
 

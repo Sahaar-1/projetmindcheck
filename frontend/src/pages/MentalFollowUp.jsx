@@ -1,23 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaCheckCircle } from 'react-icons/fa';
 import { format, addDays, differenceInDays } from "date-fns";
 import './MentalFollowUp.css';
 
 const MentalFollowUp = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
   const [checkedTasks, setCheckedTasks] = useState([]);
+  const [score, setScore] = useState(null);
 
-  if (!location.state || !location.state.score) {
+  useEffect(() => {
+    // Vérifier si l'utilisateur a terminé l'évaluation
+    const savedScore = localStorage.getItem("evaluationScore");
+    if (savedScore) {
+      setScore(parseFloat(savedScore));
+    }
+  }, []);
+
+  // Si l'utilisateur n'a pas de score, rediriger vers l'évaluation
+  if (!score) {
     return (
       <div className="no-evaluation-message">
         <h3>Oups ! Il semble que vous n'ayez pas encore complété l'évaluation.</h3>
         <p>Veuillez terminer l'évaluation pour commencer votre suivi. C'est rapide et facile !</p>
+        <button 
+          className="start-evaluation-button"
+          onClick={() => navigate('/evaluation')}
+        >
+          Commencer l'évaluation
+        </button>
       </div>
     );
   }
 
-  const { score } = location.state;
   const currentDate = new Date();
   const formattedCurrentDate = format(currentDate, "yyyy-MM-dd");
 
@@ -89,7 +104,6 @@ const MentalFollowUp = () => {
   const completedTasksCount = checkedTasks.filter(task => task).length;
 
   return (
-    <>
     <div className="follow-up-container">
       <h2>Suivi Mental <FaCheckCircle className="step-icon" /></h2>
       <div className="date-container">
@@ -125,14 +139,12 @@ const MentalFollowUp = () => {
         <p className="quote">"La santé mentale est tout aussi importante que la santé physique..."</p>
       </div>
 
-      {/* Affichage du nombre de tâches complétées */}
       {plan.length > 0 && (
         <div className="completed-tasks">
           <p><strong>Tâches complétées :</strong> {completedTasksCount} / {plan.length}</p>
         </div>
       )}
     </div>
-    </>
   );
 };
 

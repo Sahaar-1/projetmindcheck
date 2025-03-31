@@ -13,10 +13,28 @@ const Register = () => {
 
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!username || !email || !dob || !password || !confirmPassword) {
+    setError("");
+
+    // Validation des champs
+    if (!username || !email || !password || !confirmPassword) {
       setError("Tous les champs sont obligatoires!");
+      return;
+    }
+
+    if (username.length < 3) {
+      setError("Le nom d'utilisateur doit contenir au moins 3 caractères!");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Veuillez entrer une adresse email valide!");
       return;
     }
 
@@ -30,18 +48,42 @@ const Register = () => {
       return;
     }
 
+    const userData = {
+      username,
+      email,
+      password,
+      ...(dob && { dob })
+    };
+
+    console.log("Données envoyées:", userData);
+
     try {
-      await axios.post("http://localhost:5000/api/auth/register", {
-        username,
-        email,
-        dob,
-        password
-      });
+      const response = await axios.post("http://localhost:5000/api/auth/register", userData);
+      console.log("Réponse du serveur:", response.data);
+
+      // Stocke le token si l'inscription réussit
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
 
       navigate("/login");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Erreur lors de l'inscription. Veuillez réessayer.";
-      setError(errorMessage);
+      console.error("Erreur d'inscription:", error.response?.data || error);
+      const errorMessage = error.response?.data?.message;
+      
+      if (errorMessage === "Cet email est déjà utilisé") {
+        setError(
+          <div>
+            Cet email est déjà utilisé. 
+            <br />
+            <Link to="/login" style={{ color: '#3498db', textDecoration: 'underline' }}>
+              Connectez-vous ici
+            </Link>
+          </div>
+        );
+      } else {
+        setError(errorMessage || "Erreur lors de l'inscription. Veuillez réessayer.");
+      }
     }
   };
 
@@ -62,6 +104,7 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
               className="input-field"
               required
+              minLength="3"
             />
             <input
               type="email"
@@ -76,7 +119,6 @@ const Register = () => {
               value={dob}
               onChange={(e) => setDob(e.target.value)}
               className="input-field"
-              required
             />
             <input
               type="password"
@@ -85,6 +127,7 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="input-field"
               required
+              minLength="6"
             />
             <input
               type="password"
@@ -93,14 +136,15 @@ const Register = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input-field"
               required
+              minLength="6"
             />
             <button type="submit" className="submit-button">
               S'inscrire
             </button>
           </form>
           <div className="divider"></div>
-          <Link to="/login" className="create-account-button">
-            Déjà inscrit ? Se connecter
+          <Link to="/login" className="login-link">
+            Déjà un compte ? Se connecter
           </Link>
         </div>
       </div>

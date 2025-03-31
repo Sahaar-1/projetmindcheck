@@ -7,7 +7,6 @@ const Evaluation = () => {
   const [score, setScore] = useState(null);
   const [advice, setAdvice] = useState("");
   const [report, setReport] = useState("");
-  const [alertMessage, setAlertMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const navigate = useNavigate();
@@ -25,17 +24,63 @@ const Evaluation = () => {
     { key: "physicalActivity", text: "À quelle fréquence pratiquez-vous une activité physique ?", type: "scale" },
   ];
 
-  // Charger les réponses et le score depuis localStorage
+  // Charger les résultats précédents au montage du composant
   useEffect(() => {
-    const savedResponses = JSON.parse(localStorage.getItem("evaluationResponses"));
-    const savedScore = localStorage.getItem("evaluationScore");
+    const loadPreviousResults = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.log('Pas de token trouvé');
+          return;
+        }
 
-    if (savedResponses) {
-      setResponses(savedResponses);
-    }
-    if (savedScore) {
-      setScore(savedScore);
-    }
+        // Vérifier d'abord le localStorage
+        const savedScore = localStorage.getItem('evaluationScore');
+        const savedResponses = localStorage.getItem('evaluationResponses');
+        
+        if (savedScore && savedResponses) {
+          console.log('Chargement des résultats depuis le localStorage');
+          setScore(parseFloat(savedScore));
+          setResponses(JSON.parse(savedResponses));
+          setAdvice(renderAdvice(parseFloat(savedScore)));
+          setReport(renderReport(parseFloat(savedScore)));
+          setIsSubmitted(true);
+          return;
+        }
+
+        // Si pas de données dans le localStorage, récupérer depuis l'API
+        console.log('Récupération des résultats depuis l\'API');
+        const response = await fetch('http://localhost:5000/api/evaluation/last', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.evaluation) {
+            console.log('Résultats trouvés:', data.evaluation);
+            setResponses(data.evaluation.responses);
+            setScore(data.evaluation.score);
+            setAdvice(renderAdvice(data.evaluation.score));
+            setReport(renderReport(data.evaluation.score));
+            setIsSubmitted(true);
+            
+            // Sauvegarder dans le localStorage
+            localStorage.setItem('evaluationScore', data.evaluation.score);
+            localStorage.setItem('evaluationResponses', JSON.stringify(data.evaluation.responses));
+          }
+        } else if (response.status === 404) {
+          console.log('Aucune évaluation trouvée');
+          setIsSubmitted(false);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des résultats:', error);
+        setIsSubmitted(false);
+      }
+    };
+
+    loadPreviousResults();
   }, []);
 
   const handleResponse = (question, value) => {
@@ -71,7 +116,7 @@ const Evaluation = () => {
   };
 
   const renderAdvice = (percentage) => {
-    if (percentage < 40) return "Votre niveau de stress et d’anxiété semble élevé. Envisagez de parler à un professionnel de santé mentale.";
+    if (percentage < 40) return "Votre niveau de stress et d'anxiété semble élevé. Envisagez de parler à un professionnel de santé mentale.";
     if (percentage < 70) return "Votre bien-être mental est modéré. Adoptez des routines de relaxation et des interactions sociales régulières.";
     return "Votre santé mentale est globalement positive. Continuez à maintenir de bonnes habitudes de gestion du stress.";
   };
@@ -82,119 +127,134 @@ const Evaluation = () => {
     return "Votre bien-être mental est bon. Continuez vos bonnes habitudes et cultivez un état d'esprit positif.";
   };
 
-  const handleSubmit = async () => {
-    if (Object.keys(responses).length !== questions.length) {
-      setAlertMessage("Veuillez répondre à toutes les questions avant de soumettre.");
-      return;
-    }
-
-    setAlertMessage("");
-    const percentage = calculatePercentage();
-    setScore(percentage);
-    setAdvice(renderAdvice(percentage));
-    setReport(renderReport(percentage));
-    setIsSubmitted(true);
-
-    // Envoie de l'évaluation avec un ID d'évaluation (par exemple, 1)
-    const evaluationId = 1;
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/evaluation/submit', {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch('http://localhost:5000/api/evaluations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          evaluationId: evaluationId,
-          responses: responses,
-          score: percentage,
-        }),
+          answers: responses,
+          score: calculatePercentage()
+        })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de l\'enregistrement');
+      if (response.ok) {
+        const percentage = calculatePercentage();
+        
+        // Sauvegarder les résultats dans le localStorage
+        localStorage.setItem('evaluationScore', percentage);
+        localStorage.setItem('evaluationResponses', JSON.stringify(responses));
+        
+        // Rediriger vers la page des résultats
+        navigate('/results', { state: { responses, score: percentage } });
+      } else {
+        console.error('Erreur lors de la soumission de l\'évaluation');
       }
-
-      const data = await response.json();
-      console.log(data.message); 
     } catch (error) {
       console.error('Erreur:', error);
-      setAlertMessage(error.message || 'Erreur lors de l\'enregistrement de l\'évaluation');
     }
-
-    localStorage.setItem("evaluationResponses", JSON.stringify(responses));
-    localStorage.setItem("evaluationScore", percentage);
-  };
-
-  const handleMentalFollowUp = () => {
-    navigate("/suivi-mental", { state: { score } });
-  };
-
-  const handleViewDetails = () => {
-    navigate("/results", { state: { responses, score } });
   };
 
   return (
-      <div className="evaluation-container">
-        <h2>Évaluation de votre santé mentale</h2>
+    <div className="evaluation-container">
+      {!isSubmitted ? (
+        <>
+          <h2>Évaluation de votre santé mentale</h2>
+          <div className="question">
+            <p>{currentQuestion + 1}. {questions[currentQuestion].text}</p>
+            <div className="buttons">
+              {questions[currentQuestion].type === "scale" && ["haute", "moyenne", "faible"].map((value) => (
+                <button
+                  key={value}
+                  className={`response-button ${responses[questions[currentQuestion].key] === value ? "selected" : ""}`}
+                  onClick={() => handleResponse(questions[currentQuestion].key, value)}
+                >
+                  {value === "haute" ? "Élevé / Bonne / Longue" :
+                   value === "moyenne" ? "Moyenne" : "Faible / Mauvaise / Courte"}
+                </button>
+              ))}
 
-        <div className="question">
-          <p>{currentQuestion + 1}. {questions[currentQuestion].text}</p>
-          <div className="buttons">
-            {/* Render different buttons based on question type */}
-            {questions[currentQuestion].type === "scale" && ["haute", "moyenne", "faible"].map((value) => (
-              <button
-                key={value}
-                className={`response-button ${responses[questions[currentQuestion].key] === value ? "selected" : ""}`}
-                onClick={() => handleResponse(questions[currentQuestion].key, value)}
-              >
-                {value === "haute" ? "Élevé / Bonne / Longue" :
-                 value === "moyenne" ? "Moyenne" : "Faible / Mauvaise / Courte"}
-              </button>
-            ))}
-
-            {questions[currentQuestion].type === "yesNo" && ["yes", "no"].map((value) => (
-              <button
-                key={value}
-                className={`response-button ${responses[questions[currentQuestion].key] === value ? "selected" : ""}`}
-                onClick={() => handleResponse(questions[currentQuestion].key, value)}
-              >
-                {value === "yes" ? "Oui" : "Non"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="navigation-buttons">
-          {currentQuestion > 0 && (
-            <button onClick={() => setCurrentQuestion(currentQuestion - 1)}>Précédent</button>
-          )}
-          {currentQuestion < questions.length - 1 ? (
-            <button onClick={() => setCurrentQuestion(currentQuestion + 1)}>Suivant</button>
-          ) : (
-            <button onClick={handleSubmit}>Terminer l'Évaluation</button>
-          )}
-        </div>
-
-        {alertMessage && <p className="alert-message">{alertMessage}</p>}
-
-        {isSubmitted && (
-          <div className="results">
-            <h3>Votre Score : {score.toFixed(2)}%</h3>
-            <h4>Conseils</h4>
-            <p>{advice}</p>
-            <h4>Rapport</h4>
-            <p>{report}</p>
-            <div className="details-button">
-              <button onClick={handleViewDetails}>Voir plus de détails</button>
-            </div>
-            <div className="follow-up-button">
-              <button onClick={handleMentalFollowUp}>Suivi de l'état mental</button>
+              {questions[currentQuestion].type === "yesNo" && ["yes", "no"].map((value) => (
+                <button
+                  key={value}
+                  className={`response-button ${responses[questions[currentQuestion].key] === value ? "selected" : ""}`}
+                  onClick={() => handleResponse(questions[currentQuestion].key, value)}
+                >
+                  {value === "yes" ? "Oui" : "Non"}
+                </button>
+              ))}
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="navigation-buttons">
+            {currentQuestion > 0 && (
+              <button onClick={() => setCurrentQuestion(currentQuestion - 1)}>Précédent</button>
+            )}
+            {currentQuestion < questions.length - 1 ? (
+              <button onClick={() => setCurrentQuestion(currentQuestion + 1)}>Suivant</button>
+            ) : (
+              <button onClick={handleSubmit}>Terminer l'Évaluation</button>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="results-section">
+          <h3>Vos résultats</h3>
+          <div className="score-display">
+            <div className="score-circle">
+              <span className="score-value">{score}%</span>
+            </div>
+          </div>
+          <div className="results-content">
+            <div className="advice-section">
+              <h4>Conseils personnalisés</h4>
+              {advice}
+            </div>
+            <div className="report-section">
+              <h4>Rapport détaillé</h4>
+              {report}
+            </div>
+            <div className="action-buttons">
+              <button 
+                className="action-button results"
+                onClick={() => navigate('/results', { state: { responses, score } })}
+              >
+                Voir les résultats en graphiques
+              </button>
+              <button 
+                className="action-button restart"
+                onClick={() => {
+                  setResponses({});
+                  setScore(null);
+                  setAdvice("");
+                  setReport("");
+                  setIsSubmitted(false);
+                  setCurrentQuestion(0);
+                }}
+              >
+                Refaire l'évaluation
+              </button>
+              <button 
+                className="action-button follow-up"
+                onClick={() => navigate('/mental-follow-up', { state: { score } })}
+              >
+                Commencer le suivi mental
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

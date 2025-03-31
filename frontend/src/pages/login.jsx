@@ -11,8 +11,25 @@ const Login = () => {
   
   const navigate = useNavigate();  
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+
+    // Validation des champs
+    if (!email || !password) {
+      setError("Tous les champs sont obligatoires!");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Veuillez entrer une adresse email valide!");
+      return;
+    }
 
     try {
       const response = await axios.post("http://localhost:5000/api/auth/login", {
@@ -20,11 +37,15 @@ const Login = () => {
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
-      setIsLoggedIn(true);
-      navigate("/home");  
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        setIsLoggedIn(true);
+        navigate("/home");
+      } else {
+        setError("Erreur lors de la connexion. Veuillez réessayer.");
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Invalid email or password.";
+      const errorMessage = error.response?.data?.message || "Email ou mot de passe incorrect.";
       setError(errorMessage);
     }
   };
@@ -42,7 +63,7 @@ const Login = () => {
               {error && <p className="error-message">{error}</p>}
               <form onSubmit={handleLogin} className="form">
                 <input
-                  type="text"
+                  type="email"
                   placeholder="Adresse e-mail"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -62,7 +83,7 @@ const Login = () => {
                 </button>
               </form>
               <div className="divider"></div>
-              <Link to="/register" className="create-account-button">
+              <Link to="/register" className="register-link">
                 Créer un nouveau compte
               </Link>
             </>

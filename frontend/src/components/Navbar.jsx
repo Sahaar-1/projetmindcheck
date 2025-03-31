@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import './Navbar.css';
 const Navbar = () => {
   const navigate = useNavigate();
 
@@ -50,16 +50,16 @@ const Navbar = () => {
                 </NavLink>
               </li>
               <li className="navbar-item">
-                <NavLink to="/suivi-mental" className={({ isActive }) => (isActive ? 'active' : '')}>
+                <NavLink to="/mental-follow-up" className={({ isActive }) => (isActive ? 'active' : '')}>
                   <i className="fas fa-heartbeat"></i>
                   <span>Suivi</span>
                 </NavLink>
               </li>
               <li className="navbar-item no-text">
-                <a onClick={handleLogout} className="logout-button">
+                <button onClick={handleLogout} className="logout-button">
                   <i className="fas fa-sign-out-alt"></i>
                   <span>Logout</span>
-                </a>
+                </button>
               </li>
             </>
         </ul>
